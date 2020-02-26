@@ -6,6 +6,9 @@
 	
 		<provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
 		
+		<class>net.dollmar.svc.depcon.entity.Artifact</class>
+		<class>net.dollmar.svc.depcon.entity.Application</class>
+				
 		<properties>
 			<property name="javax.persistence.jdbc.driver" value="org.hsqldb.jdbcDriver" />
 			<property name="javax.persistence.jdbc.url" value="jdbc:hsqldb:mem:testdb" />

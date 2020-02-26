@@ -13,8 +13,41 @@ in a database and provide you with a set of views to explore how your software i
 
 DepCon is built using the SparkJava micro-framework and JPA/Hibernate. It uses the Apache Derby as an embedded database.
 
+Running
+-------
+You have a single fat jar file `DepCon.jar`. Run this application using the command below,
 
+`java -jar DepCon.jar`
 
+When run the application will create a directory `data` where the embedded database files will be saved.
+ 
+Configuration
+-------------
+You may set the following DepCon specific Java properties in a file `DepCon.properties` in the `config` directory relative
+to where DepCon.jar resides.
+
+| Property Name                | Description                                 | Note                              |
+|------------------------------|-------------------------------------------- |-----------------------------------|
+| depcon.listener.port         | listener port number                        | Optional [default: 10080]         |
+| depcon.network.security      | set to true to enable TLS transport         | Optional [default: false]         |
+| depcon.keystore.filename     | Java keystore file name for TLS support     | Conditional [when TLS is enabled] |
+| depcon.keystore.password     | Password for the Java keystore file         | Conditional [when TLS is enabled] |
+| depcon.ignore.artifacts.from | Comma separated list of group ids to ignore | Optional                          | 
+
+Users Authentication
+--------------------
+DepCon enforces HTTP Basic Authorization to authenticate users. You can use the below command to create users.
+(The below assumes you are running the command in the directory where DepCon.jar is present).
+
+`java -cp DepCon.jar net.dollmar.svc.depcon.utils.CreateUser`
+
+Answer few questions and user identities will be created in a file `config/users.dat`.
+
+License
+-------
+This application is free to use by anyone without any restrcition and is released as a open source software under 
+Apache License Version 2.0. Please browse to https://www.apache.org/licenses/LICENSE-2.0 for details of the provisions 
+of this license.
 
 
 

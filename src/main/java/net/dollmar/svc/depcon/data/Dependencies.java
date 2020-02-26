@@ -1,10 +1,23 @@
+/*
+Copyright 2017 Mohammad A. Rahin                                                                                                          
+
+Licensed under the Apache License, Version 2.0 (the "License");                                                                           
+you may not use this file except in compliance with the License.                                                                          
+You may obtain a copy of the License at                                                                                                   
+    http://www.apache.org/licenses/LICENSE-2.0                                                                                            
+Unless required by applicable law or agreed to in writing, software                                                                       
+distributed under the License is distributed on an "AS IS" BASIS,                                                                         
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.                                                                  
+See the License for the specific language governing permissions and                                                                       
+limitations under the License.       
+*/
+
 package net.dollmar.svc.depcon.data;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
@@ -17,29 +30,54 @@ import net.dollmar.svc.depcon.dao.ArtifactDao;
 import net.dollmar.svc.depcon.entity.Application;
 import net.dollmar.svc.depcon.utils.DepConException;
 import net.dollmar.svc.depcon.utils.EntityBuilder;
+import net.dollmar.svc.depcon.utils.Utils;
 
 
 public class Dependencies {
 
 	private final static String LINE_PREFIX = "[INFO]";
+	private final static String END_MARKER = "[INFO] BUILD SUCCESS";
 	
 	private String prodName;
 	private String prodVersion;
+	private boolean endMarkerReached = false;
 	
-	List<String> ignoreFrom = Arrays.asList("biz.thelogicgroup", "com.barclaycard", "org.eclips1");
+	//List<String> ignoreArtifactsFrom = Arrays.asList("biz.thelogicgroup", "com.barclaycard", "org.eclips1");
+	List<String> ignoreArtifactsFrom = new ArrayList<>();
 	
 	public Dependencies(final String appName, final String appVersion) {
 		this.prodName = appName;
 		this.prodVersion = appVersion;
+		
+		// create the ignore list
+		String il = System.getProperty("depcon.ignore.artifacts.from");
+		if (!Utils.isEmptyString(il)) {
+			String[] groupIds = il.split(",");
+			for (String g : groupIds) {
+				ignoreArtifactsFrom.add(g.trim());
+			}
+		}
 	}
+
 	
 	private boolean shouldIgnore(String groupId) {
-		return ignoreFrom.stream().anyMatch(i -> groupId.startsWith(i));
+		return ignoreArtifactsFrom.stream().anyMatch(i -> groupId.startsWith(i));
+	}
+	
+	private boolean reachedEnd(String line) {
+		if (endMarkerReached)
+			return true;
+		if (END_MARKER.equals(line)) {
+			endMarkerReached = true;
+			return true;
+		}
+		return false;
 	}
 	
 	
 	public Collection<String[]> importFile(final String depFile) {
 		Objects.requireNonNull(depFile);
+		endMarkerReached = false;
 		
 		Collection<String[]> li = new ArrayList<>();
 		try (Stream<String> stream = Files.lines(Paths.get(depFile))) {
@@ -47,6 +85,7 @@ public class Dependencies {
 			li = stream
 				.map(String::trim)
 				.filter(line -> line.startsWith(LINE_PREFIX))
+				.filter(line -> !reachedEnd(line))
 				.map(line -> line.substring(line.indexOf(LINE_PREFIX) + LINE_PREFIX.length()).trim().split(":"))
 				.filter(a -> (a.length == 5))
 				.filter(a -> !shouldIgnore(a[0]))
@@ -60,39 +99,7 @@ public class Dependencies {
 		}
 	}
 
-//	private Collection<String[]> importFile2(final String depFile) {
-//		Objects.requireNonNull(depFile);
-//		
-//		File inp = new File(depFile);
-//		
-//		if (!inp.exists()) {
-//			throw new DepConException("Error: Dependency file does not exist");
-//		}
-//		Collection<String[]> li = new ArrayList<>();
-//		
-//		try (BufferedReader br = new BufferedReader(new FileReader(inp))) {
-//			String st;
-//			while ((st = br.readLine()) != null) {
-//				st = st.trim();
-//				if (st.isEmpty() || !st.startsWith(LINE_PREFIX)) {
-//					continue;
-//				}
-//				
-//				String[] parts = st.substring(st.indexOf(LINE_PREFIX) + LINE_PREFIX.length()).trim().split(":");
-//				if (parts.length != 5) {
-//					continue;
-//				}
-//				if (!parts[0].startsWith("biz.thelogicgroup") && !parts[0].startsWith("com.barclaycard")) {
-//					li.add(parts);
-//				}
-//			}
-//			return li;
-//		}
-//		catch (Exception e) {
-//			throw new DepConException("Error: Failed to import dependencies", e);
-//		}
-//	}
-	
+
 	private String formatDependency(String[] dep) {
 		StringBuilder sb = new StringBuilder();
 		sb.append(dep[1]).append(" ==> ");
@@ -131,18 +138,18 @@ public class Dependencies {
 	}	
 	
 	
-	public static void main(String[] args) {
-        if (args.length != 3) {
-        	System.out.println("Usage: Dependencies app-name app-version dep-file-name");
-        }
-        else {
-        	Dependencies d = new Dependencies(args[0], args[1]);
-        	
-        	Collection<String[]> deps = d.importFile(args[2]);
-        	d.printDependencies(deps);
-        	//d.persist(deps);
-        }
-        System.exit(0);		
-	}
+//	public static void main(String[] args) {
+//        if (args.length != 3) {
+//        	System.out.println("Usage: Dependencies app-name app-version dep-file-name");
+//        }
+//        else {
+//        	Dependencies d = new Dependencies(args[0], args[1]);
+//        	
+//        	Collection<String[]> deps = d.importFile(args[2]);
+//        	d.printDependencies(deps);
+//        	//d.persist(deps);
+//        }
+//        System.exit(0);		
+//	}
 	
 }

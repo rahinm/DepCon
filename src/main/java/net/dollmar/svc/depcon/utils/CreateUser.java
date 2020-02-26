@@ -14,52 +14,42 @@ limitations under the License.
 
 package net.dollmar.svc.depcon.utils;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
+import java.io.Console;
+import java.util.Arrays;
 
-import javax.servlet.http.Part;
+import net.dollmar.svc.depcon.data.Users;
 
-import spark.utils.IOUtils;
+public class CreateUser {
 
-public class Utils {
 
-	
-	public static boolean isEmptyString(final String s) {
-		return s == null || s.isEmpty();
-	}
-	
-	public static <T extends Comparable<? super T>> List<T> sort(Collection<T> coll) {
-		List<T> sorted = new ArrayList<>(coll);
-		Collections.sort(sorted);
-		
-		return sorted;
-	}
-	
-	public static String partToString(Part part) {
-		try (InputStream inputStream = part.getInputStream()) {
-			return IOUtils.toString(inputStream);
+	public static void main(String[] args) {
+
+		System.out.println("\n*** DepCon: You are about to create a new user ***\n");
+
+		Console console = System.console();
+		if (console != null) {
+			Users u = new Users();
+
+			String userName = console.readLine("Enter user name: ");
+			if (u.existUser(userName)) {
+				String choice = console.readLine(String.format("   *** User '%s' already exist. Overwirte [Y/N]: ", userName));
+				if (!choice.startsWith("Y") && !choice.startsWith("y")) {
+					return;
+				}
+			}
+			char[] password = console.readPassword("Enter password: ");
+
+			try {
+				u.createUser(userName, password);
+
+				Arrays.fill(password, ' ');
+			}
+			catch (Exception e) {
+				System.err.println(String.format("ERROR: Failed to create new user [Reason: %s]", e.getMessage()));
+			}
 		}
-		catch (IOException e) {
-			return "";
+		else {
+			System.err.println("ERROR: No Console available.");
 		}
-	}	
-	
-	public static String buildStyledHtmlPage(final String header, final String content) {
-		StringBuilder sb = new StringBuilder();
-
-		sb.append("<html><head>");
-		sb.append("<link rel=\"stylesheet\" type=\"text/css\" href=\"/DepCon/StyleSheets/DepCon.css\"/>");
-		sb.append("</head>");
-		sb.append("<body bgcolor=\"#b8d6ca\">");
-		sb.append(String.format("<h2>%s</h2>", header));
-		sb.append(content);
-		sb.append("</body>");
-		sb.append("</html>");
-
-		return sb.toString();
-	}	
+	}
 }

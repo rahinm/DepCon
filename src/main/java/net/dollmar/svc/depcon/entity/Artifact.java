@@ -37,7 +37,7 @@ public class Artifact implements java.io.Serializable, Comparable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "art_generator")
-	@SequenceGenerator(name="art_generator", sequenceName = "art_seq")
+	@SequenceGenerator(name="art_generator", sequenceName = "art_seq", initialValue = 1, allocationSize = 20)
 	@Column(name = "ID", updatable = false, nullable = false)
 	private Long id;
 	

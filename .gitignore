@@ -3,7 +3,7 @@
 .settings
 .idea
 target
-data
+data/*
 *.log
 dep-files
 dependency-reduced-pom.xml

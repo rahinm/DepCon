@@ -33,10 +33,8 @@ public class Application implements java.io.Serializable, Comparable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "app_generator")
-	@SequenceGenerator(name="app_generator", sequenceName = "app_seq")
+	@SequenceGenerator(name="app_generator", sequenceName = "app_seq", initialValue = 1, allocationSize = 20)
 	@Column(name = "ID", updatable = false, nullable = false)	
-//	@GeneratedValue(strategy = GenerationType.AUTO)
-//	@Column(name = "ID")
 	private Long id;
 
 	@Column(name = "NAME", unique = false)

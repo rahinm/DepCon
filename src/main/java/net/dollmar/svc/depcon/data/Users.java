@@ -83,7 +83,7 @@ public class Users {
 		String[] parts = users.getProperty(userName).split(FIELD_SEP);
 		
 		try {
-			return parts[1].equalsIgnoreCase(calculateHash(parts[0] + FIELD_SEP + password));
+			return parts[1].equalsIgnoreCase(calculateHash(parts[0] + FIELD_SEP + userName + FIELD_SEP + password));
 		}
 		catch (NoSuchAlgorithmException e) {
 			return false;
@@ -100,7 +100,7 @@ public class Users {
 		new SecureRandom().nextBytes(bytes);
 		String salt = DatatypeConverter.printHexBinary(bytes);
 		
-		String hash = calculateHash(salt + FIELD_SEP + new String(password));
+		String hash = calculateHash(salt + FIELD_SEP + userName + FIELD_SEP + new String(password));
 
 		readUsers();
 		users.put(userName, salt + FIELD_SEP + hash);

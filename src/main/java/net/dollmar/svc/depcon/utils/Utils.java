@@ -52,6 +52,8 @@ public class Utils {
 		StringBuilder sb = new StringBuilder();
 
 		sb.append("<html><head>");
+		sb.append("<script src='js/sorttable.js' type='text/javascript'></script>");
+		sb.append("<script src='js/search.js' type='text/javascript'></script>");
 		sb.append("<link rel=\"stylesheet\" type=\"text/css\" href=\"/DepCon/StyleSheets/DepCon.css\"/>");
 		sb.append("</head>");
 		sb.append("<body bgcolor=\"#b8d6ca\">");

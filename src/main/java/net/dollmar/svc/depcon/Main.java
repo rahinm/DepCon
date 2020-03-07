@@ -25,6 +25,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.security.Security;
 import java.util.Properties;
 
 import javax.servlet.MultipartConfigElement;
@@ -90,6 +91,10 @@ public class Main {
 		int serverPort = Integer.getInteger("depcon.listener.port", DEFAULT_PORT);
 		port(serverPort);
 		if (Boolean.getBoolean("depcon.network.security")) {
+			// disable insecure algorithms
+			Security.setProperty("jdk.tls.disabledAlgorithms",
+					"SSLv3, TLSv1, TLSv1.1, RC4, MD5withRSA, DH keySize < 1024, EC keySize < 224, DES40_CBC, RC4_40, 3DES_EDE_CBC");
+			
 			String keyStoreName = System.getProperty("depcon.keystore.filename");
 			String keyStorePassword = System.getProperty("depcon.keystore.password");
 

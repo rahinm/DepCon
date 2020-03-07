@@ -66,27 +66,35 @@ public class LibsViewPage {
 
 		StringBuilder sb = new StringBuilder();
 		sb.append(String.format("<h3>Number of dependenct libraries = %d</h3>", libs.size()));
-
-		sb.append("<table border='1'>");
-		sb.append("<tr><th>Id</th>");
+		
+		sb.append("<input type='text' id='libraryName' name='search_input' onkeyup='searchLibrary()' placeholder='Search for artifacts/libraries ...'>");
+		
+		sb.append("<table id ='libsTable' class='sortable' border='1'>");
+		sb.append("<thead><tr>");
+		sb.append("<th>Id</th>");
 		sb.append("<th>Artifact Id</th>");
 		sb.append("<th>Group Id</th>");
 		sb.append("<th>Version</th>");
 		sb.append("<th>Packaging</th>");
-		sb.append("<th>Scope</th></tr>");
+		sb.append("<th>Scope</th>");
+		sb.append("</tr></thead>");
 
 		if (libs != null) {
 			// sort the collection for better presentation
 			List<Artifact> libsList = Utils.sort(libs);
+			sb.append("<tbody>");
 			for (Artifact lib : libsList) {
 				String aid = "" + lib.getId();
-				sb.append("<tr><td>").append(createLinkForPopup(aid)).append("</td>");
+				sb.append("<tr>");
+				sb.append("<td>").append(createLinkForPopup(aid)).append("</td>");
 				sb.append("<td>").append(lib.getArtifactId()).append("</td>");
 				sb.append("<td>").append(lib.getGroupId()).append("</td>");
 				sb.append("<td>").append(lib.getVersion()).append("</td>");
 				sb.append("<td>").append(lib.getPackaging()).append("</td>");
-				sb.append("<td>").append(lib.getScope()).append("</td></tr>");
+				sb.append("<td>").append(lib.getScope()).append("</td>");
+				sb.append("</tr>");
 			}
+			sb.append("</tbody>");
 		}
 
 		sb.append("</table>");
@@ -122,28 +130,32 @@ public class LibsViewPage {
 			pageHeader = String.format("Details for library: '%s'", lib.getArtifactId());
 			
 			sb.append("<table border='1'>");
-			sb.append("<tr><th>Field</th>");
-			sb.append("<th>Value</th></tr>");
+			sb.append("<thead><tr><th>Field</th>");
+			sb.append("<th>Value</th></tr></thead>");
 
+			sb.append("<tbody>");
 			sb.append("<tr><td>Id</td><td>" + lib.getId() + "</td></tr>");
 			sb.append("<tr><td>Artifact Id</td><td>" + lib.getArtifactId() + "</td></tr>");
 			sb.append("<tr><td>Group Id</td><td>" + lib.getGroupId() + "</td></tr>");
 			sb.append("<tr><td>Version</td><td>" + lib.getVersion() + "</td></tr>");
 			sb.append("<tr><td>Packaging</td><td>" + lib.getPackaging() + "</td></tr>");
 			sb.append("<tr><td>Scope </td><td>" + lib.getScope() + "</td></tr>");
+			sb.append("</tbody>");
 			sb.append("</table>");
 			if (lib.getUsedByApps() != null || lib.getUsedByApps().size() != 0) {
 				sb.append("<h2>Used in Applications: </h2>");
 				sb.append("<table border='1'>");
-				sb.append("<tr><th>Id</th>");
+				sb.append("<thead><tr><th>Id</th>");
 				sb.append("<th>Application Name</th>");
-				sb.append("<th>Version</th></tr>");
+				sb.append("<th>Version</th></tr></thead>");
 
+				sb.append("<tbody>");
 				for (Application app: lib.getUsedByApps()) {
 					sb.append("<tr><td>").append(app.getId()).append("</td>");
 					sb.append("<td>").append(app.getName()).append("</td>");
 					sb.append("<td>").append(app.getVersion()).append("</td></tr>");
 				}
+				sb.append("</tbody>");
 				sb.append("</table>");
 			}
 		}

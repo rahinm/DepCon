@@ -39,20 +39,24 @@ public class ApplicationsViewPage {
 		StringBuilder sb = new StringBuilder();
 		sb.append(String.format("<h3>Number of registered applications = %d</h3>", apps.size()));
 
-		sb.append("<table border='1'>");
-		sb.append("<tr><th>Id</th>");
+		sb.append("<input type='text' id='appName' name='search_input' onkeyup='searchApplication()' placeholder='Search for applications ...'>");
+
+		sb.append("<table id ='appsTable' class='sortable' border='1'>");
+		sb.append("<thead><tr><th>Id</th>");
 		sb.append("<th>Application Name</th>");
-		sb.append("<th>Version</th></tr>");
+		sb.append("<th>Version</th></tr></thead>");
 
 		if (apps != null) {
 			// sort the collection for better presentation
 			List<Application> appList = Utils.sort(apps);
+			sb.append("<tbody>");
 			for (Application app : appList) {
 				String aid = "" + app.getId();
 				sb.append("<tr><td>").append(createLinkForPopup(aid)).append("</td>");
 				sb.append("<td>").append(app.getName()).append("</td>");
 				sb.append("<td>").append(app.getVersion()).append("</td></tr>");
 			}
+			sb.append("</tbody>");
 		}
 
 		sb.append("</table>");

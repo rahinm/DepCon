@@ -91,7 +91,7 @@ public class ArtifactDao {
 	
 	
 	public Artifact getArtifact(long rowId) {
-		String queryString = "SELECT a FROM Artifact a JOIN FETCH a.usedByApps u WHERE a.id = :rowId";
+		String queryString = "SELECT a FROM Artifact a LEFT JOIN FETCH a.usedByApps u WHERE a.id = :rowId";
 		EntityManager em = EntityManagerUtil.getEntityManager();
 		try {
 			em.getTransaction().begin();
@@ -117,7 +117,7 @@ public class ArtifactDao {
 	
 	
 	public Artifact getArtifact(String groupId, String artifactId, String version) {
-		String queryString = "SELECT a FROM Artifact a JOIN FETCH a.usedByApps u WHERE a.artifactId = :artifactId AND a.groupId = :groupId AND a.version = :version";
+		String queryString = "SELECT a FROM Artifact a LEFT JOIN FETCH a.usedByApps u WHERE a.artifactId = :artifactId AND a.groupId = :groupId AND a.version = :version";
 		EntityManager em = EntityManagerUtil.getEntityManager();
 		try {
 			em.getTransaction().begin();
@@ -145,7 +145,39 @@ public class ArtifactDao {
 	}
 	
 	
-	public Artifact saveArtifact(Artifact art) {
+  public Artifact getArtifact(final Artifact art) {
+    Objects.requireNonNull(art);
+    
+    String queryString = "SELECT a FROM Artifact a LEFT JOIN FETCH a.usedByApps u WHERE a.artifactId = :artifactId AND a.groupId = :groupId AND a.version = :version AND a.scope = :scope";
+    EntityManager em = EntityManagerUtil.getEntityManager();
+    try {
+      em.getTransaction().begin();
+      TypedQuery<Artifact> query = em.createQuery(queryString, Artifact.class);
+      query.setParameter("artifactId", art.getArtifactId());
+      query.setParameter("groupId", art.getGroupId());
+      query.setParameter("version", art.getVersion());
+      query.setParameter("scope", art.getScope());
+      
+      List<Artifact> result = query.getResultList();
+      em.getTransaction().commit();
+      
+      return (result == null || result.size() == 0) ? null : result.get(0);
+    }
+    catch (DepConException se) {
+      throw se;
+    }
+    catch (Exception e) {
+      em.getTransaction().rollback();
+      throw new DepConException(500, String.format("Failed to retrieve artifact '%s:%s:%s:%s' from database.", 
+          art.getGroupId(), art.getArtifactId(), art.getVersion(), art.getScope()), e);
+    }
+    finally {
+      close(em);
+    }
+  }
+
+  
+  public Artifact saveArtifact(Artifact art) {
 		Objects.requireNonNull(art);
 		
 		Artifact existing = getArtifact(art.getGroupId(), art.getArtifactId(), art.getVersion());

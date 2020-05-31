@@ -17,21 +17,18 @@ package net.dollmar.svc.depcon.entity;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 @Entity
 @Table(name = "ARTIFACTS")
-public class Artifact implements java.io.Serializable, Comparable {
+public class Artifact implements java.io.Serializable, Comparable<Artifact> {
 	
 	private static final long serialVersionUID = 1495331023666978971L;
 
@@ -56,14 +53,7 @@ public class Artifact implements java.io.Serializable, Comparable {
 	@Column(name = "SCOPE", unique = false)
 	private String scope;
 	
-	@ManyToMany(cascade = {
-	        CascadeType.PERSIST,
-	        CascadeType.MERGE
-	    })
-	@JoinTable(
-		name = "used_by",
-		joinColumns = @JoinColumn(name = "art_id"),
-		inverseJoinColumns = @JoinColumn(name = "app_id"))
+  @ManyToMany(mappedBy = "artifacts")
 	Set<Application> usedByApps = new HashSet<>();
 	
 	
@@ -131,10 +121,10 @@ public class Artifact implements java.io.Serializable, Comparable {
 	}
 	
 	
-	public void removeApplication(Application app) {
-		usedByApps.remove(app);
-		app.getArtifacts().remove(this);
-	}
+//	public void removeApplication(Application app) {
+//		usedByApps.remove(app);
+//		app.getArtifacts().remove(this);
+//	}
 	
     @Override
 	public int hashCode() {
@@ -196,7 +186,7 @@ public class Artifact implements java.io.Serializable, Comparable {
 	}
 
 	@Override
-	public int compareTo(Object o) {
+	public int compareTo(Artifact o) {
 		// TODO Auto-generated method stub
 		return artifactId.compareTo(((Artifact) o).artifactId);
 	}

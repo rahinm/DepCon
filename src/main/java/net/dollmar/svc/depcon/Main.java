@@ -34,11 +34,15 @@ import javax.servlet.http.Part;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import net.dollmar.svc.depcon.dao.ApplicationDao;
 import net.dollmar.svc.depcon.data.Dependencies;
 import net.dollmar.svc.depcon.filters.BasicAuthenticationFilter;
 import net.dollmar.svc.depcon.filters.Filters;
 import net.dollmar.svc.depcon.pages.ApplicationsViewPage;
+import net.dollmar.svc.depcon.pages.HomePage;
 import net.dollmar.svc.depcon.pages.LibsViewPage;
+import net.dollmar.svc.depcon.pages.UploadPage;
+import net.dollmar.svc.depcon.utils.DepConException;
 import net.dollmar.svc.depcon.utils.Utils;
 import spark.utils.IOUtils;
 
@@ -54,6 +58,7 @@ public class Main {
 	public static final String LIBS_PATH = String.format("/%s/%s", Main.SVC_NAME, "libs");
 	public static final String APPS_PATH = String.format("/%s/%s", Main.SVC_NAME, "apps");
 	public static final String IMPORT_PATH = String.format("/%s/%s", Main.SVC_NAME, "import");
+  public static final String UPLOAD_PATH = String.format("/%s/%s", Main.SVC_NAME, "upload");
 
 	private static final String TMP_DIR = "data/tmp";
 	private static final String CFG_FILE = "config/DepCon.properties";
@@ -120,7 +125,12 @@ public class Main {
 
 		before(new BasicAuthenticationFilter("*"));
 
-		get(LIBS_PATH, (req, resp) -> {
+    get(HOME_PATH, (req, resp) -> {
+      resp.status(200);
+      return HomePage.render();
+    });
+
+    get(LIBS_PATH, (req, resp) -> {
 			resp.status(200);
 			return new LibsViewPage().render(req.queryMap().toMap());
 		});		
@@ -138,6 +148,33 @@ public class Main {
 		});	
 
 
+    get(APPS_PATH + "/:rowId", (req, resp) -> {
+      resp.status(200);
+      return new ApplicationsViewPage().render(Long.parseLong(req.params(":rowId")), req.queryMap().toMap());
+    });   
+
+    
+    delete(APPS_PATH + "/:rowId", (req, resp) -> {
+		  long id = Long.parseLong(req.params(":rowId"));
+		  ApplicationDao appDao = new ApplicationDao();
+		  try {
+		    appDao.deleteApplication(id);
+		    resp.status(204);
+		    
+		    return String.format("Application [id=%d] successfully deleted", id);
+		  }
+		  catch (DepConException dce) {
+		    resp.status(dce.getCode());
+	      return "Error: " + dce.getMessage();
+		  }
+		});
+		
+		get(UPLOAD_PATH, (req, resp) -> {
+		  resp.status(200);
+		  return UploadPage.render();
+		});
+		
+		
 		post(IMPORT_PATH, (req, resp) -> {
 			req.attribute("org.eclipse.jetty.multipartConfig", new MultipartConfigElement(TMP_DIR));
 
@@ -179,4 +216,5 @@ public class Main {
 		//Set up after-filters (called after each get/post)
 		after("*", Filters.addGzipHeader);		
 	}
+
 }

@@ -61,7 +61,6 @@ public class LibsViewPage {
 	}
 
 
-	@SuppressWarnings("unchecked")
 	private String buildHtmlTableForLibs(final String title, final Collection<Artifact> libs) {
 
 		StringBuilder sb = new StringBuilder();

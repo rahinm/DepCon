@@ -5,6 +5,7 @@
 target
 data/*
 *.log
+dep.*
 dep-files
 dependency-reduced-pom.xml
 */*.jks

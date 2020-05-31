@@ -16,18 +16,21 @@ package net.dollmar.svc.depcon.entity;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 @Entity
 @Table(name = "APPLICATIONS")
-public class Application implements java.io.Serializable, Comparable {
+public class Application implements java.io.Serializable, Comparable<Application> {
 
 	private static final long serialVersionUID = 5279242006099780076L;
 
@@ -43,7 +46,14 @@ public class Application implements java.io.Serializable, Comparable {
 	@Column(name = "VERSION", unique = false)
 	private String version;
 
-	@ManyToMany(mappedBy = "usedByApps")
+  @ManyToMany(cascade = {
+      CascadeType.PERSIST,
+      CascadeType.MERGE
+  })
+  @JoinTable(
+      name = "used_by",
+      joinColumns = @JoinColumn(name = "app_id"),
+      inverseJoinColumns = @JoinColumn(name = "art_id"))
 	Set<Artifact> artifacts = new HashSet<>();
 
 
@@ -80,7 +90,18 @@ public class Application implements java.io.Serializable, Comparable {
 		this.artifacts = artifacts;
 	}
 
-
+  public void addArtifact(Artifact art) {
+    artifacts.add(art);
+    art.getUsedByApps().add(this);
+  }
+  
+  
+//	public void removeArtifact(Artifact art) {
+//	  artifacts.remove(art);
+//	  art.getUsedByApps().remove(this);
+//	}
+//
+	
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -124,7 +145,7 @@ public class Application implements java.io.Serializable, Comparable {
 	}
 	
 	@Override
-	public int compareTo(Object o) {
+	public int compareTo(Application o) {
 		return name.compareTo(((Application) o).name);
 	}
 }

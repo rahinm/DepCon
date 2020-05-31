@@ -1,5 +1,6 @@
 package net.dollmar.svc.depcon.pages;
 
+import java.util.Collections;
 import java.util.List;
 
 import net.dollmar.svc.depcon.dao.ApplicationDao;
@@ -10,7 +11,9 @@ public class UploadPage {
   private static final String PAGE_TOP_PART = 
       "<!DOCTYPE html> <html lang='en'>" + 
       "<head> <meta charset='UTF-8'> <title>DepCon - Utility to upload dependency list file</title> <link rel='stylesheet' type='text/css' href='StyleSheets/DepCon.css' /> </head>" +
-      "<body> <h2>Fill the form below to upload your application's dependency list file</h2> <hr>" +
+      "<body> <h2>Fill the form below to upload your application's dependency list file</h2>" +
+      "<h3><i>Important: Ensure that the file was created using 'mvn dependency:list' command</i></h3>" +
+      "<hr>" +
       "<div style='display:block'>" +
       " <form action='/DepCon/import' method='post' enctype='multipart/form-data'>" +
       "  <label for='app_name'>Application name (<i>select existing name from dropdown list</i>): </label>" +
@@ -37,6 +40,8 @@ public class UploadPage {
     sb.append(PAGE_TOP_PART);
 
     List<String> appNames = new ApplicationDao().getAllApplicationNames();
+    Collections.sort(appNames);
+    
     for (String name : appNames) {
       sb.append(String.format("  <option value='%s'>\n", name));
     }

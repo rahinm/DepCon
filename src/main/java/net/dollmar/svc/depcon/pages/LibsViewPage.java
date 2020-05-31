@@ -1,5 +1,5 @@
 /*
-Copyright 2017 Mohammad A. Rahin                                                                                                          
+Copyright 2020 Mohammad A. Rahin                                                                                                          
 
 Licensed under the Apache License, Version 2.0 (the "License");                                                                           
 you may not use this file except in compliance with the License.                                                                          
@@ -23,6 +23,8 @@ import java.util.Map.Entry;
 import net.dollmar.svc.depcon.Main;
 import net.dollmar.svc.depcon.dao.ApplicationDao;
 import net.dollmar.svc.depcon.dao.ArtifactDao;
+import net.dollmar.svc.depcon.data.Subject;
+import net.dollmar.svc.depcon.data.UserContext;
 import net.dollmar.svc.depcon.entity.Application;
 import net.dollmar.svc.depcon.entity.Artifact;
 import net.dollmar.svc.depcon.utils.Utils;
@@ -31,6 +33,8 @@ public class LibsViewPage {
 
 
 	public String render(Map<String, String[]> qm) {
+	  Subject sub = UserContext.getConext().getSubject();
+	  
 		ArtifactDao artDao = new ArtifactDao();
 
 		if (qm == null || qm.isEmpty()) {

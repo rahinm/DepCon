@@ -1,5 +1,5 @@
 /*
-Copyright 2017 Mohammad A. Rahin                                                                                                          
+Copyright 2020 Mohammad A. Rahin                                                                                                          
 
 Licensed under the Apache License, Version 2.0 (the "License");                                                                           
 you may not use this file except in compliance with the License.                                                                          
@@ -83,7 +83,11 @@ public class Users {
 		String[] parts = users.getProperty(userName).split(FIELD_SEP);
 		
 		try {
-			return parts[1].equalsIgnoreCase(calculateHash(parts[0] + FIELD_SEP + userName + FIELD_SEP + password));
+		  boolean isAuthenticated = parts[2].equalsIgnoreCase(calculateHash(parts[1] + FIELD_SEP + userName + FIELD_SEP + parts[0] + FIELD_SEP + password));
+		  if (isAuthenticated) {
+		    UserContext.getConext().set(new Subject(userName, parts[0]));
+		  }
+			return isAuthenticated;
 		}
 		catch (NoSuchAlgorithmException e) {
 			return false;
@@ -92,18 +96,19 @@ public class Users {
 	
 	
 	
-	public void createUser(final String userName, final char[] password) throws Exception {
+	public void createUser(final String userName, final char[] password, String role) throws Exception {
 		Objects.requireNonNull(userName);
 		Objects.requireNonNull(password);
+		Objects.requireNonNull(role);
 		
 		byte bytes[] = new byte[10];
 		new SecureRandom().nextBytes(bytes);
 		String salt = DatatypeConverter.printHexBinary(bytes);
 		
-		String hash = calculateHash(salt + FIELD_SEP + userName + FIELD_SEP + new String(password));
+		String hash = calculateHash(salt + FIELD_SEP + userName + FIELD_SEP + role + FIELD_SEP + new String(password));
 
 		readUsers();
-		users.put(userName, salt + FIELD_SEP + hash);
+		users.put(userName, role + FIELD_SEP + salt + FIELD_SEP + hash);
 			
 		try (OutputStream output = new FileOutputStream(usersFile)) {
 			users.store(output, "DepCon users list ==> *** DO NOT EDIT BY HAND ***");

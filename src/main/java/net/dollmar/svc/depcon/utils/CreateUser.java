@@ -1,5 +1,5 @@
 /*
-Copyright 2017 Mohammad A. Rahin                                                                                                          
+Copyright 2020 Mohammad A. Rahin                                                                                                          
 
 Licensed under the Apache License, Version 2.0 (the "License");                                                                           
 you may not use this file except in compliance with the License.                                                                          
@@ -38,9 +38,10 @@ public class CreateUser {
 				}
 			}
 			char[] password = console.readPassword("Enter password: ");
+			String role = console.readLine("Enter user role: ");
 
 			try {
-				u.createUser(userName, password);
+				u.createUser(userName, password, role);
 
 				Arrays.fill(password, ' ');
 			}

@@ -1,5 +1,5 @@
 /*
-Copyright 2017 Mohammad A. Rahin                                                                                                          
+Copyright 2020 Mohammad A. Rahin                                                                                                          
 
 Licensed under the Apache License, Version 2.0 (the "License");                                                                           
 you may not use this file except in compliance with the License.                                                                          
@@ -14,6 +14,7 @@ limitations under the License.
 
 package net.dollmar.svc.depcon.filters;
 
+import net.dollmar.svc.depcon.data.UserContext;
 import spark.*;
 
 public class Filters {
@@ -32,4 +33,9 @@ public class Filters {
         response.header("Transfer-Encoding", "chunked");
     };
 
+    // Cleans up UserContext 
+    public static Filter cleanup = (Request request, Response response) -> {
+      UserContext.getConext().removeSubject();
+    };
+    
 }

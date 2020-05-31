@@ -10,37 +10,31 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.                                                                  
 See the License for the specific language governing permissions and                                                                       
 limitations under the License.       
-*/
+ */
 
-package net.dollmar.svc.depcon.utils;
+package net.dollmar.svc.depcon.data;
 
-import java.util.Objects;
+public class Subject {
+  private String user;
+  private String role;
 
-import net.dollmar.svc.depcon.entity.Application;
-import net.dollmar.svc.depcon.entity.Artifact;
 
-public class EntityBuilder {
+  public Subject(String user, String role) {
+    super();
+    this.user = user;
+    this.role = role;
+  }
 
-	public static Artifact buildArtifact(String[] ad) {
-		Objects.requireNonNull(ad);
-		
-		Artifact art = new Artifact();
-		art.setGroupId(ad[0]);
-		art.setArtifactId(ad[1]);
-		art.setPackaging(ad[2]);
-		art.setVersion(ad[3]);
-		art.setScope(ad[4]);
-		
-		return art;
-	}
-	
-	
-	public static Application buildApplication(String name, String version) {
-		Application app = new Application();
-		app.setName(name);
-		app.setVersion(version);
-		
-		return app;
-	}
-
+  public String getUser() {
+    return user;
+  }
+  public void setUser(String user) {
+    this.user = user;
+  }
+  public String getRole() {
+    return role;
+  }
+  public void setRole(String role) {
+    this.role = role;
+  }
 }

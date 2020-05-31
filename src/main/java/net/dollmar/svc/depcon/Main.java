@@ -1,5 +1,5 @@
 /*
-Copyright 2017 Mohammad A. Rahin                                                                                                          
+Copyright 2020 Mohammad A. Rahin                                                                                                          
 
 Licensed under the Apache License, Version 2.0 (the "License");                                                                           
 you may not use this file except in compliance with the License.                                                                          
@@ -34,7 +34,6 @@ import javax.servlet.http.Part;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.dollmar.svc.depcon.dao.ApplicationDao;
 import net.dollmar.svc.depcon.data.Dependencies;
 import net.dollmar.svc.depcon.filters.BasicAuthenticationFilter;
 import net.dollmar.svc.depcon.filters.Filters;
@@ -42,7 +41,6 @@ import net.dollmar.svc.depcon.pages.ApplicationsViewPage;
 import net.dollmar.svc.depcon.pages.HomePage;
 import net.dollmar.svc.depcon.pages.LibsViewPage;
 import net.dollmar.svc.depcon.pages.UploadPage;
-import net.dollmar.svc.depcon.utils.DepConException;
 import net.dollmar.svc.depcon.utils.Utils;
 import spark.utils.IOUtils;
 
@@ -59,6 +57,8 @@ public class Main {
 	public static final String APPS_PATH = String.format("/%s/%s", Main.SVC_NAME, "apps");
 	public static final String IMPORT_PATH = String.format("/%s/%s", Main.SVC_NAME, "import");
   public static final String UPLOAD_PATH = String.format("/%s/%s", Main.SVC_NAME, "upload");
+  
+  public static final String SU_ROLE_NAME = "super-user";
 
 	private static final String TMP_DIR = "data/tmp";
 	private static final String CFG_FILE = "config/DepCon.properties";
@@ -154,20 +154,20 @@ public class Main {
     });   
 
     
-    delete(APPS_PATH + "/:rowId", (req, resp) -> {
-		  long id = Long.parseLong(req.params(":rowId"));
-		  ApplicationDao appDao = new ApplicationDao();
-		  try {
-		    appDao.deleteApplication(id);
-		    resp.status(204);
-		    
-		    return String.format("Application [id=%d] successfully deleted", id);
-		  }
-		  catch (DepConException dce) {
-		    resp.status(dce.getCode());
-	      return "Error: " + dce.getMessage();
-		  }
-		});
+//    delete(APPS_PATH + "/:rowId", (req, resp) -> {
+//		  long id = Long.parseLong(req.params(":rowId"));
+//		  ApplicationDao appDao = new ApplicationDao();
+//		  try {
+//		    appDao.deleteApplication(id);
+//		    resp.status(204);
+//		    
+//		    return String.format("Application [id=%d] successfully deleted", id);
+//		  }
+//		  catch (DepConException dce) {
+//		    resp.status(dce.getCode());
+//	      return "Error: " + dce.getMessage();
+//		  }
+//		});
 		
 		get(UPLOAD_PATH, (req, resp) -> {
 		  resp.status(200);
@@ -189,7 +189,7 @@ public class Main {
 					|| Utils.isEmptyString(appVersion) 
 					|| Utils.isEmptyString(depFilePart.getSubmittedFileName())) {
 				resp.status(400);
-				return Utils.buildStyledHtmlPage("Error", "Missing input parameter");
+				return Utils.buildStyledHtmlPage("Error", "Missing input parameter.");
 			}
 			File tmpDir = new File(TMP_DIR);
 			if (!tmpDir.exists()) {
@@ -210,11 +210,12 @@ public class Main {
 				resp.status(500);
 				return Utils.buildStyledHtmlPage("Error", e.getMessage());
 			}
-			return Utils.buildStyledHtmlPage("Success", "File successfully uploaded and imported into database");
+			return Utils.buildStyledHtmlPage("Success", "File successfully uploaded and imported into database.");
 		});
 
 		//Set up after-filters (called after each get/post)
 		after("*", Filters.addGzipHeader);		
+		after("*", Filters.cleanup);
 	}
 
 }

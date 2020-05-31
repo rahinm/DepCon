@@ -43,6 +43,9 @@ DepCon enforces HTTP Basic Authorization to authenticate users. You can use the 
 
 Answer few questions and user identities will be created in a file `config/users.dat`.
 
+Note: You are now able to set user roles. The only role that is relevant at the moment is 'super-user'. Users having
+this role will be able to remove Applications and associated details from the database.
+
 Uploading Dependency Files
 -------------------------
 There are two ways you may upload an application's dependency files.

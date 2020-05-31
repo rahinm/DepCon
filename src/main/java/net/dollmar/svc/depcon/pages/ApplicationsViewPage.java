@@ -1,5 +1,5 @@
 /*
-Copyright 2017 Mohammad A. Rahin                                                                                                          
+Copyright 2020 Mohammad A. Rahin                                                                                                          
 
 Licensed under the Apache License, Version 2.0 (the "License");                                                                           
 you may not use this file except in compliance with the License.                                                                          
@@ -24,6 +24,7 @@ import java.util.Map.Entry;
 
 import net.dollmar.svc.depcon.Main;
 import net.dollmar.svc.depcon.dao.ApplicationDao;
+import net.dollmar.svc.depcon.data.UserContext;
 import net.dollmar.svc.depcon.entity.Application;
 import net.dollmar.svc.depcon.utils.DepConException;
 import net.dollmar.svc.depcon.utils.Utils;
@@ -106,7 +107,7 @@ public class ApplicationsViewPage {
             String.format("Application [%s, Version: %s] removed. Please refresh Applications View page.", app.getName(), app.getVersion()));
       }
       catch (DepConException dce) {
-        return "Error: " + dce.getMessage();
+        return Utils.buildStyledHtmlPage("Error",dce.getMessage());
       }      
     }
   }
@@ -114,6 +115,8 @@ public class ApplicationsViewPage {
 
   private String buildHtmlTableForLibs(final String title, final Collection<Application> apps) {
 
+    boolean isSuperUser = Main.SU_ROLE_NAME.equals(UserContext.getConext().getSubject().getRole());
+    
     StringBuilder sb = new StringBuilder();
     sb.append(String.format("<h3>Number of registered applications = %d</h3>", apps.size()));
 
@@ -123,7 +126,10 @@ public class ApplicationsViewPage {
     sb.append("<thead><tr><th>Id</th>");
     sb.append("<th>Application Name</th>");
     sb.append("<th>Version</th>");
-    sb.append("<th>Remove</th></tr></thead>");
+    if (isSuperUser) {
+      sb.append("<th>Remove</th>");
+    }
+    sb.append("</tr></thead>");
 
     if (apps != null) {
       // sort the collection for better presentation
@@ -134,7 +140,10 @@ public class ApplicationsViewPage {
         sb.append("<tr><td>").append(createLinkForPopup(aid)).append("</td>");
         sb.append("<td>").append(app.getName()).append("</td>");
         sb.append("<td>").append(app.getVersion()).append("</td>");
-        sb.append("<td>").append(createLinkForRemoval(aid)).append("</td>");
+        if (isSuperUser) {
+          sb.append("<td>").append(createLinkForRemoval(aid)).append("</td>");
+        }
+        sb.append("</tr>");
       }
       sb.append("</tbody>");
     }
@@ -163,7 +172,7 @@ public class ApplicationsViewPage {
     StringBuilder sb = new StringBuilder();
     sb.append(String.format("<a href=\"%s\" ", url)).append("target=\"popup\" ");
     sb.append(
-        String.format("onclick=\"window.open('%s', 'popup', 'width=1000, height=600'); return false;\">", url));
+        String.format("onclick=\"window.open('%s', 'popup', 'width=500, height=200'); return false;\">", url));
     sb.append("Remove").append("</a>");
     return sb.toString();
   }

@@ -1,5 +1,5 @@
 /*
-Copyright 2017 Mohammad A. Rahin                                                                                                          
+Copyright 2020 Mohammad A. Rahin                                                                                                          
 
 Licensed under the Apache License, Version 2.0 (the "License");                                                                           
 you may not use this file except in compliance with the License.                                                                          
@@ -21,6 +21,8 @@ import java.util.Objects;
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 
+import net.dollmar.svc.depcon.Main;
+import net.dollmar.svc.depcon.data.UserContext;
 import net.dollmar.svc.depcon.entity.Application;
 import net.dollmar.svc.depcon.entity.Artifact;
 import net.dollmar.svc.depcon.utils.DepConException;
@@ -235,6 +237,9 @@ public class ApplicationDao {
   
 	
 	public void deleteApplication(long id) {
+    if (!Main.SU_ROLE_NAME.equals(UserContext.getConext().getSubject().getRole())) {
+      throw new DepConException(403, "You do not have permission to perform this operation.");
+    }
 		EntityManager em = EntityManagerUtil.getEntityManager();
 		try {
 			em.getTransaction().begin();

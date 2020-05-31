@@ -7,7 +7,7 @@
 
 	<groupId>net.dollmar.svc</groupId>
 	<artifactId>DepCon</artifactId>
-	<version>1.2</version>
+	<version>1.3-SNAPSHOT</version>
 	<name>A simple tool to list/view/explore Java software dependencies</name>
     
     

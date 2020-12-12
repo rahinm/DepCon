@@ -1,0 +1,70 @@
+<html> 
+ <head> 
+  <title>DepCon - Dependency control </title> 
+  <link rel='stylesheet' type='text/css' href='StyleSheets/DepCon.css' />
+  <meta http-equiv='cache-control' content='no-cache'/> 
+ </head>
+ <body bgcolor='#b8d6ca' leftmargin='10' rightmargin='10' topmargin='20'>
+ <p> 
+  <img src='images/DepCon-Logo.png' alt='DepCon'>
+ </p>
+
+<h2 id="running">Running</h2>
+<p>You have a single fat jar file <code>DepCon.jar</code>. Run this application using the command below,</p>
+<p><code>java -jar DepCon.jar</code></p>
+<p>When run the application will create a directory <code>data</code> where the embedded database files will be saved.</p>
+<h2 id="configuration">Configuration</h2>
+<p>You may set the following DepCon specific Java properties in a file <code>DepCon.properties</code> in the <code>config</code> directory relative to where DepCon.jar resides.</p>
+<table>
+<thead>
+<tr class="header">
+<th align="left">Property Name</th>
+<th align="left">Description</th>
+<th align="left">Note</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">depcon.listener.port</td>
+<td align="left">listener port number</td>
+<td align="left">Optional [default: 10080]</td>
+</tr>
+<tr class="even">
+<td align="left">depcon.network.security</td>
+<td align="left">set to true to enable TLS transport</td>
+<td align="left">Optional [default: false]</td>
+</tr>
+<tr class="odd">
+<td align="left">depcon.keystore.filename</td>
+<td align="left">Java keystore file name for TLS support</td>
+<td align="left">Conditional [when TLS is enabled]</td>
+</tr>
+<tr class="even">
+<td align="left">depcon.keystore.password</td>
+<td align="left">Password for the Java keystore file</td>
+<td align="left">Conditional [when TLS is enabled]</td>
+</tr>
+<tr class="odd">
+<td align="left">depcon.ignore.artifacts.from</td>
+<td align="left">Comma separated list of group ids to ignore</td>
+<td align="left">Optional</td>
+</tr>
+</tbody>
+</table>
+<h2 id="users-authentication">Users Authentication</h2>
+<p>DepCon enforces HTTP Basic Authorization to authenticate users. You can use the below command to create users. (The below assumes you are running the command in the directory where DepCon.jar is present).</p>
+<p><code>java -cp DepCon.jar net.dollmar.svc.depcon.utils.CreateUser</code></p>
+<p>Answer few questions and user identities will be created in a file <code>config/users.dat</code>.</p>
+<p>Note: You are now able to set user roles. The only role that is relevant at the moment is 'super-user'. Users having this role will be able to remove Applications and associated details from the database.</p>
+<h2 id="uploading-dependency-files">Uploading Dependency Files</h2>
+<p>There are two ways you may upload an application's dependency files.</p>
+<h3 id="web-gui">Web GUI</h3>
+<p>Select the <code>Import Dependency List</code> from the right-hand side pane of the Web GUI. On the form that is presented enter your application name and verison and then click on the <code>Choose file</code> button to select the dependency list file you have created. Finally click on the large green coloured <code>Upload</code> button.</p>
+<h3 id="using-curl">Using cUrl</h3>
+<p>You may use cUrl to upload your application's dependency file by using a command like below:</p>
+<p><code>curl -u &lt;user-name&gt;:&lt;password&gt; -F app_name=&lt;application-name&gt; -F app_version=&lt;app-version&gt; -F dep_file=@&lt;dependency-list-file-name&gt; &lt;DepCon-URL&gt;/import</code></p>
+<p>where you must replace the values within angle brackets (<code>&lt;..&gt;</code>) with correct and valid values.</p>
+<h2 id="license">License</h2>
+<p>This application is free to use by anyone without any restrcition and is released as a open source software under Apache License Version 2.0. Please browse to https://www.apache.org/licenses/LICENSE-2.0 for details of the provisions of this license.</p>
+
+</html>

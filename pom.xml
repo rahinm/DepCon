@@ -7,10 +7,10 @@
 
 	<groupId>net.dollmar.svc</groupId>
 	<artifactId>DepCon</artifactId>
-	<version>1.3-SNAPSHOT</version>
+	<version>1.3</version>
 	<name>A simple tool to list/view/explore Java software dependencies</name>
-    
-    
+
+
 	<properties>
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
@@ -23,14 +23,14 @@
 		<version.gson>2.2.4</version.gson>
 		<version.hibernate>5.2.2.Final</version.hibernate>
 		<version.slf4j>1.7.5</version.slf4j>
-		<version.sparkjava>2.5.5</version.sparkjava>
+		<version.sparkjava>2.7.2</version.sparkjava>
 
-		<version.junit>4.12</version.junit>
+		<version.junit>4.13.1</version.junit>
 		<version.molecule>0.13.0</version.molecule>
 		<version.hamcrest>2.0.0.0</version.hamcrest>
 
 		<version.maven-jar.plugin>2.2</version.maven-jar.plugin>
-        <version.shade.plugin>2.4.2</version.shade.plugin>
+		<version.shade.plugin>2.4.2</version.shade.plugin>
 		<version.maven-site-plugin>3.7.1</version.maven-site-plugin>
 		<version.maven-surefire-report.plugin>2.19.1</version.maven-surefire-report.plugin>
 		<version.maven-project-info-reports-plugin>3.0.0</version.maven-project-info-reports-plugin>
@@ -94,10 +94,10 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jar-plugin</artifactId>
-                <version>${version.maven-jar.plugin}</version>
+				<version>${version.maven-jar.plugin}</version>
 				<configuration>
-					<source>${jdk.version}</source> 
-					<target>${jdk.version}</target>                    
+					<source>${jdk.version}</source>
+					<target>${jdk.version}</target>
 					<archive>
 						<manifest>
 							<addDefaultImplementationEntries>true</addDefaultImplementationEntries>
@@ -128,7 +128,7 @@
 						</transformer>
 					</transformers>
 				</configuration>
-			</plugin>            
+			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-site-plugin</artifactId>

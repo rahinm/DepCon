@@ -32,7 +32,6 @@ public class HomePage {
       "for your software and upload the same into DepCon. Once uploaded, DepCon stores your software's dependency information in " + 
       "a database and provide you with a set of views to explore how your software is using other library components. <br><br>" +
       
-      "DepCon is built using the SparkJava micro-framework and JPA/Hibernate. It uses the Apache Derby as an embedded database. </p>" +
       "</body> </html>";
   
   

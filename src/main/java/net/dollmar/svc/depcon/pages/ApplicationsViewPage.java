@@ -36,7 +36,7 @@ public class ApplicationsViewPage {
     ApplicationDao appDao = new ApplicationDao();
 
     if (qm == null || qm.isEmpty()) {
-      return buildHtmlTableForLibs("All dependent libraries", appDao.getAllApplications());
+      return buildHtmlTableForLibs("List of registered applications", appDao.getAllApplications());
     }
 
     boolean toRemove = false;

@@ -38,7 +38,7 @@ public class LibsViewPage {
 		ArtifactDao artDao = new ArtifactDao();
 
 		if (qm == null || qm.isEmpty()) {
-			return buildHtmlTableForLibs("All dependent libraries", artDao.getAllArtifacts());
+			return buildHtmlTableForLibs("List of dependent libraries", artDao.getAllArtifacts());
 		}
 		String scopes[];
 		Application app;
@@ -68,7 +68,7 @@ public class LibsViewPage {
 	private String buildHtmlTableForLibs(final String title, final Collection<Artifact> libs) {
 
 		StringBuilder sb = new StringBuilder();
-		sb.append(String.format("<h3>Number of dependenct libraries = %d</h3>", libs.size()));
+		sb.append(String.format("<h3>Number of dependent libraries = %d</h3>", libs.size()));
 		
 		sb.append("<input type='text' id='libraryName' name='search_input' onkeyup='searchLibrary()' placeholder='Search for artifacts/libraries ...'>");
 		

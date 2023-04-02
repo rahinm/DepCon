@@ -7,7 +7,7 @@
 
 	<groupId>net.dollmar.svc</groupId>
 	<artifactId>DepCon</artifactId>
-	<version>1.4-SNAPSHOT</version>
+	<version>1.4</version>
 	<name>A simple tool to list/view/explore Java software dependencies</name>
 
 
@@ -19,17 +19,22 @@
 		<final.artifact.name>DepCon</final.artifact.name>
 		<main.class>net.dollmar.svc.depcon.Main</main.class>
 
-		<version.derby>10.12.1.1</version.derby>
-		<version.gson>2.2.4</version.gson>
-		<version.hibernate>5.2.2.Final</version.hibernate>
+		<version.derby>10.14.2.0</version.derby>
+		<version.gson>2.10.1</version.gson>
+        <version.hibernate>5.6.15.Final</version.hibernate>
 		<version.slf4j>1.7.5</version.slf4j>
-		<version.sparkjava>2.7.2</version.sparkjava>
+		<version.sparkjava>2.9.4</version.sparkjava>
+		<version.apache.commons.codec>1.15</version.apache.commons.codec>
+		<version.jaxb-core>2.3.0.1</version.jaxb-core>
+		<version.jaxb-api>2.3.1</version.jaxb-api>
+		<version.javassist>3.22.0-GA</version.javassist>
 
 		<version.junit>4.13.1</version.junit>
 		<version.molecule>0.13.0</version.molecule>
 		<version.hamcrest>2.0.0.0</version.hamcrest>
 
 		<version.maven-jar.plugin>2.2</version.maven-jar.plugin>
+		<version.dependency-check.plugin>8.2.1</version.dependency-check.plugin>
 		<version.shade.plugin>2.4.2</version.shade.plugin>
 		<version.maven-site-plugin>3.7.1</version.maven-site-plugin>
 		<version.maven-surefire-report.plugin>2.19.1</version.maven-surefire-report.plugin>
@@ -59,11 +64,21 @@
 			<artifactId>derby</artifactId>
 			<version>${version.derby}</version>
 		</dependency>
+		<dependency>
+			<groupId>commons-codec</groupId>
+			<artifactId>commons-codec</artifactId>
+			<version>${version.apache.commons.codec}</version>
+		</dependency>
 
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-core</artifactId>
 			<version>${version.hibernate}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.javassist</groupId>
+			<artifactId>javassist</artifactId>
+			<version>${version.javassist}</version>
 		</dependency>
 
 		<!-- Test Dependencies -->
@@ -106,6 +121,24 @@
 					</archive>
 				</configuration>
 			</plugin>
+
+            <!-- OWASP Dependency Check  -->
+            <plugin>
+              <groupId>org.owasp</groupId>
+              <artifactId>dependency-check-maven</artifactId>
+              <version>${version.dependency-check.plugin}</version>
+              <configuration>
+                  <failBuildOnCVSS>8</failBuildOnCVSS>
+                  <skipProvidedScope>true</skipProvidedScope>
+              </configuration>
+              <executions>
+                  <execution>
+                      <goals>
+                          <goal>check</goal>
+                      </goals>
+                  </execution>
+              </executions>
+            </plugin>
 
 			<!-- Maven Shade Plugin -->
 			<plugin>

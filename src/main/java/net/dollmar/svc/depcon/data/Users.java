@@ -27,7 +27,7 @@ import java.security.SecureRandom;
 import java.util.Objects;
 import java.util.Properties;
 
-import javax.xml.bind.DatatypeConverter;
+import org.apache.commons.codec.binary.Hex;
 
 public class Users {
 	
@@ -64,7 +64,7 @@ public class Users {
 		MessageDigest md = MessageDigest.getInstance("SHA-256");
 		byte[] encodedHash = md.digest(data.getBytes(StandardCharsets.UTF_8));
 		
-		return DatatypeConverter.printHexBinary(encodedHash);
+		return Hex.encodeHexString(encodedHash);
 	}
 	
 	public boolean existUser(final String userName) {
@@ -103,7 +103,7 @@ public class Users {
 		
 		byte bytes[] = new byte[10];
 		new SecureRandom().nextBytes(bytes);
-		String salt = DatatypeConverter.printHexBinary(bytes);
+		String salt = Hex.encodeHexString(bytes);
 		
 		String hash = calculateHash(salt + FIELD_SEP + userName + FIELD_SEP + role + FIELD_SEP + new String(password));
 

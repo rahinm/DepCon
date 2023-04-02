@@ -21,11 +21,11 @@ import spark.utils.SparkUtils;
 
 import static spark.Spark.halt;
 
-import javax.xml.bind.DatatypeConverter;
+//import java.util.Base64;
 
-import net.dollmar.svc.depcon.data.Subject;
-import net.dollmar.svc.depcon.data.UserContext;
 import net.dollmar.svc.depcon.data.Users;
+import org.apache.commons.codec.binary.Base64;
+
 
 public class BasicAuthenticationFilter extends FilterImpl
 {
@@ -36,6 +36,8 @@ public class BasicAuthenticationFilter extends FilterImpl
   private static final int NUMBER_OF_AUTHENTICATION_FIELDS = 2;
 
   private static final String ACCEPT_ALL_TYPES = "*";
+  
+  private static final int MAX_SESSION_INACTIVE_TIME = 60;
 
 
   public BasicAuthenticationFilter()
@@ -62,6 +64,8 @@ public class BasicAuthenticationFilter extends FilterImpl
       response.header("WWW-Authenticate", BASIC_AUTHENTICATION_TYPE);
       halt(401);
     }
+    System.out.println("Max Interactive Interval Time: " + request.session().maxInactiveInterval());
+    request.session().maxInactiveInterval(MAX_SESSION_INACTIVE_TIME); 
   }
 
   private String[] credentialsFrom(final String encodedHeader)
@@ -73,7 +77,7 @@ public class BasicAuthenticationFilter extends FilterImpl
 
   private String decodeHeader(final String encodedHeader)
   {
-    return new String(DatatypeConverter.parseBase64Binary(encodedHeader));
+    return new String(Base64.decodeBase64(encodedHeader));
   }
 
   private boolean notAuthenticatedWith(final String[] credentials)

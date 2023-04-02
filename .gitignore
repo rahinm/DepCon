@@ -4,6 +4,8 @@
 .idea
 target
 data/*
+data.*/*
+*/*~
 *.log
 dep.*
 dep-files
